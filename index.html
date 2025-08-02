@@ -16,7 +16,7 @@
     <button onclick="sendMessage()">Send</button>
 
     <script>
-      const webhookUrl = "https://riotesting.app.n8n.cloud/webhook/a889d2ae-2159-402f-b326-5f61e90f602e/chat"; // 🔁 Replace with your n8n webhook
+      const webhookUrl = "https://riotesting.app.n8n.cloud/webhook/a889d2ae-2159-402f-b326-5f61e90f602e/chat"; // Replace with your webhook URL
 
       async function sendMessage() {
         const input = document.getElementById('input');
@@ -34,8 +34,11 @@
             body: JSON.stringify({ message: userMessage })
           });
 
+          // Attempt to parse JSON response
           const data = await response.json();
-          const botReply = data.replies?.[0]?.text || 'No reply';
+
+          // Check multiple keys for bot reply
+          const botReply = data.response || data.answer || data.reply || 'No reply';
 
           chatbox.innerHTML += `<div><strong>Bot:</strong> ${botReply}</div>`;
           chatbox.scrollTop = chatbox.scrollHeight;
