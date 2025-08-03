@@ -40,7 +40,7 @@
       responseDiv.innerHTML = "Loading...";
 
       try {
-        const res = await fetch("https://riotesting.app.n8n.cloud/webhook-test/ask-me", {
+        const res = await fetch("https://riotesting.app.n8n.cloud/webhook/ask-me", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ question })
