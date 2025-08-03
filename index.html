@@ -1,51 +1,57 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>n8n Chatbot</title>
-    <style>
-      body { font-family: sans-serif; background: #f5f5f5; padding: 2rem; }
-      #chatbox { background: white; border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: auto; margin-bottom: 10px; }
-      input, button { padding: 10px; font-size: 14px; }
-    </style>
-  </head>
-  <body>
-    <h2>Chat with n8n 🤖</h2>
-    <div id="chatbox"></div>
-    <input id="input" type="text" placeholder="Type your message..." />
-    <button onclick="sendMessage()">Send</button>
+<head>
+  <title>Ask Me Anything</title>
+  <meta charset="UTF-8" />
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2em;
+      background-color: #f4f4f4;
+      max-width: 600px;
+      margin: auto;
+    }
+    input, button {
+      padding: 1em;
+      font-size: 1em;
+      margin-top: 1em;
+      width: 100%;
+    }
+    #response {
+      margin-top: 2em;
+      background: #fff;
+      padding: 1em;
+      border-left: 4px solid #0077ff;
+    }
+  </style>
+</head>
+<body>
 
-    <script>
-      const webhookUrl = "https://riotesting.app.n8n.cloud/webhook/a889d2ae-2159-402f-b326-5f61e90f602e/chat"; // Replace with your webhook URL
+  <h2>Ask Me Anything</h2>
+  <input id="question" placeholder="Type your question..." />
+  <button onclick="ask()">Submit</button>
+  
+  <div id="response"></div>
 
-      async function sendMessage() {
-        const input = document.getElementById('input');
-        const chatbox = document.getElementById('chatbox');
-        const userMessage = input.value.trim();
-        if (!userMessage) return;
+  <script>
+    async function ask() {
+      const question = document.getElementById('question').value;
+      const responseDiv = document.getElementById('response');
+      responseDiv.innerHTML = "Loading...";
 
-        chatbox.innerHTML += `<div><strong>You:</strong> ${userMessage}</div>`;
-        input.value = '';
+      try {
+        const res = await fetch("https://riotesting.app.n8n.cloud/webhook-test/ask-me", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question })
+        });
 
-        try {
-          const response = await fetch(webhookUrl, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ message: userMessage })
-          });
-
-          // Attempt to parse JSON response
-          const data = await response.json();
-
-          // Check multiple keys for bot reply
-          const botReply = data.response || data.answer || data.reply || 'No reply';
-
-          chatbox.innerHTML += `<div><strong>Bot:</strong> ${botReply}</div>`;
-          chatbox.scrollTop = chatbox.scrollHeight;
-        } catch (error) {
-          chatbox.innerHTML += `<div style="color:red;"><strong>Error:</strong> ${error.message}</div>`;
-        }
+        const data = await res.json();
+        responseDiv.innerHTML = "<strong>Response:</strong><br>" + data.answer;
+      } catch (err) {
+        responseDiv.innerHTML = "Error: " + err.message;
       }
-    </script>
-  </body>
+    }
+  </script>
+</body>
 </html>
