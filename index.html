@@ -47,6 +47,7 @@
         });
 
         const data = await res.json();
+        console.log(data);
         responseDiv.innerHTML = "<strong>Response:</strong><br>" + data.answer;
       } catch (err) {
         responseDiv.innerHTML = "Error: " + err.message;
